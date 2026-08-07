@@ -1,17 +1,17 @@
-# 快批「新一代」产品原型
+# 批灵 · 快批智能体独立产品线原型
 
-可交互高保真原型，演示「地图游戏式解锁」核心体验：新手村小地图 → 完成任务 → 地图变大 → AI 装备解锁 → 全图。
+基于 PRD v1.0 的可交互高保真原型（每日工作卡 + 微信/App 双端演示）。
 
-- 原型来源：`快批新一代产品原型.html`（Obsidian: `Outputs/快批智能体/`）
-- 对应文档：`快批新一代产品-AI能力包规划.md`（v1.1）、`快批新一代产品PRD.md`（v1.0）
-- 在线访问：https://erp.riverxu.com
+- 单文件自包含 HTML（内联 CSS/JS），浏览器直接打开即可
+- 演示控制台可切换：6 场景 × 2 端（微信端老板 / App 端确认台）
+- 覆盖：每日工作卡（补货/催收/月报）、问数边界、草稿单闭环、30 天排班
 
 ## 本地运行
-
-直接用浏览器打开 `index.html`，无需构建。
+直接双击 `index.html` 或用任意静态服务器：
+```bash
+npx serve .
+```
 
 ## 部署
-
-- 平台：Vercel（静态站点，零配置）
-- 域名：erp.riverxu.com
-- 分支：main，push 自动触发部署
+- GitHub: https://github.com/zhijiangxu512-oss/piling-agent-prototype
+- Vercel: 自动部署，绑定 ai.riverxu.com

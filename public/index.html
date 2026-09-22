@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>批灵 · 快批智能体独立产品线原型 — 每日工作卡 + 双端演示</title>
+<style>
+:root{
+  --navy:#1E2761; --navy-deep:#141A3C; --gold:#E8A33D; --ice:#CADCFC;
+  --bg:#EDF0F8; --card:#FFFFFF; --text:#1A1F36; --muted:#6A7194; --line:#E3E8F4;
+  --green:#2E9E6B; --red:#C0392B; --warn:#B8860B;
+  --radius:16px; --shadow:0 6px 24px rgba(20,26,60,.08);
+}
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}
+body{background:#E9EDF8;display:flex;flex-direction:column;align-items:center;padding:28px 12px 120px;min-height:100vh}
+.page-head{text-align:center;margin-bottom:20px;color:var(--navy-deep)}
+.page-head h1{font-size:22px;letter-spacing:.5px}
+.page-head p{font-size:13px;color:var(--muted);margin-top:6px}
+.phone{width:390px;background:var(--bg);border-radius:44px;padding:14px;box-shadow:0 20px 60px rgba(20,26,60,.25);border:1px solid #D5DCF0;position:relative}
+.screen{background:var(--card);border-radius:34px;height:760px;overflow:hidden;position:relative;display:flex;flex-direction:column}
+.statusbar{display:flex;justify-content:space-between;padding:12px 22px 4px;font-size:12px;color:var(--text);font-weight:600;background:var(--card)}
+/* ===== 微信端 ===== */
+.wechat-banner{background:var(--navy);color:#fff;text-align:center;padding:6px;font-size:11px;letter-spacing:.5px}
+.wechat-top{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--line)}
+.avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--navy),#4A5BC7);display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:700}
+.wechat-top .name{font-size:15px;font-weight:600}
+.wechat-top .sub{font-size:11px;color:var(--muted)}
+.chat-body{flex:1;overflow-y:auto;padding:14px;background:#F4F6FB}
+.msg{max-width:88%;margin-bottom:14px;display:flex;flex-direction:column}
+.msg.left{align-items:flex-start}
+.msg.right{align-items:flex-end;margin-left:auto}
+.bubble{padding:11px 14px;border-radius:16px;font-size:13.5px;line-height:1.6;color:var(--text);box-shadow:0 1px 3px rgba(20,26,60,.06)}
+.msg.left .bubble{background:#fff;border-top-left-radius:4px}
+.msg.right .bubble{background:var(--navy);color:#fff;border-top-right-radius:4px}
+.msg.right .bubble .small{color:#A8B0CC;font-size:11px}
+.time-tag{font-size:10px;color:#9AA1BF;margin:2px 4px}
+/* 工作卡 */
+.workcard{background:#fff;border-radius:18px;box-shadow:var(--shadow);overflow:hidden;border:1px solid var(--line);margin-bottom:6px}
+.card-head{background:linear-gradient(135deg,var(--navy),#2A3588);color:#fff;padding:12px 14px;display:flex;justify-content:space-between;align-items:center}
+.card-head .d{font-size:11px;opacity:.85}
+.card-head .t{font-size:14px;font-weight:700}
+.card-badge{background:var(--gold);color:#141A3C;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px}
+.card-body{padding:13px 14px}
+.card-sec{margin-bottom:10px}
+.card-sec .lbl{font-size:10.5px;color:var(--muted);font-weight:600;letter-spacing:.5px;margin-bottom:3px}
+.card-sec .val{font-size:13.5px;color:var(--text);line-height:1.55}
+.money{color:var(--red);font-weight:700}
+.good{color:var(--green);font-weight:700}
+.quote{background:#F6F8FC;border-radius:12px;padding:10px 12px;font-size:12.5px;color:var(--text);border:1px dashed #C6CFE8;margin-top:6px;line-height:1.55;position:relative}
+.copy-btn{position:absolute;right:8px;bottom:8px;background:var(--gold);color:#141A3C;border:none;font-size:10.5px;font-weight:700;padding:4px 10px;border-radius:14px;cursor:pointer}
+.copy-btn:hover{background:#F0B558}
+.actions{display:flex;gap:8px;padding:10px 14px;border-top:1px solid var(--line)}
+.btn{flex:1;text-align:center;padding:9px 0;border-radius:12px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid var(--line);background:#fff;color:var(--text);transition:all .15s}
+.btn:hover{border-color:var(--navy);color:var(--navy)}
+.btn.primary{background:var(--navy);color:#fff;border-color:var(--navy)}
+.btn.primary:hover{background:#2A3588}
+.btn.gold{background:var(--gold);color:#141A3C;border-color:var(--gold)}
+.btn.gold:hover{background:#F0B558}
+.btn:active{transform:scale(.97)}
+/* 问数 */
+.ask-chip{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid #C6CFE8;color:var(--navy);font-size:12px;font-weight:600;padding:6px 12px;border-radius:20px;margin:3px;cursor:pointer}
+.ask-chip:hover{background:var(--ice)}
+.chat-input{display:flex;gap:8px;padding:10px 14px;background:#fff;border-top:1px solid var(--line)}
+.chat-input input{flex:1;border:1px solid var(--line);border-radius:20px;padding:9px 14px;font-size:13px;outline:none}
+.chat-input input:focus{border-color:var(--navy)}
+.send-btn{background:var(--navy);color:#fff;border:none;border-radius:20px;padding:0 16px;font-size:13px;font-weight:600;cursor:pointer}
+/* ===== App 端 ===== */
+.app-nav{display:flex;background:#fff;border-bottom:1px solid var(--line)}
+.app-nav .tab{flex:1;text-align:center;padding:10px 0;font-size:12px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent}
+.app-nav .tab.active{color:var(--navy);font-weight:700;border-bottom-color:var(--navy)}
+.tabbar{display:flex;background:#fff;border-top:1px solid var(--line);padding:6px 0 10px}
+.tabbar .t{flex:1;text-align:center;font-size:10px;color:var(--muted);cursor:pointer}
+.tabbar .t.active{color:var(--navy);font-weight:700}
+.tabbar .t .ic{font-size:18px;display:block;margin-bottom:2px}
+/* 草稿确认 */
+.draft-card{background:#fff;border-radius:16px;border:1px solid var(--line);margin:12px;overflow:hidden;box-shadow:var(--shadow)}
+.draft-head{display:flex;justify-content:space-between;align-items:center;padding:11px 14px;border-bottom:1px solid var(--line)}
+.draft-head .c{font-size:13.5px;font-weight:700}
+.draft-row{display:flex;justify-content:space-between;padding:8px 14px;font-size:12.5px;border-bottom:1px solid #F1F3FA}
+.draft-row .k{color:var(--muted)}
+.draft-row .v{font-weight:600}
+.draft-row .tag{font-size:10px;background:#E6F4EC;color:var(--green);font-weight:700;padding:2px 7px;border-radius:10px}
+/* 排班日历 */
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;padding:12px}
+.cal-day{aspect-ratio:1;border-radius:10px;background:#F1F3FA;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:10px;color:var(--muted);cursor:pointer;position:relative}
+.cal-day .num{font-size:12px;font-weight:700;color:var(--text)}
+.cal-day.done{background:#E6F4EC;color:var(--green)}
+.cal-day.done .num{color:var(--green)}
+.cal-day.today{background:var(--navy);color:#fff}
+.cal-day.today .num{color:#fff}
+.cal-day.locked{opacity:.4}
+.phase-row{display:flex;gap:6px;padding:4px 12px 10px;flex-wrap:wrap}
+.phase{font-size:10px;background:#EEF1F9;color:var(--muted);padding:4px 9px;border-radius:12px}
+.phase.cur{background:var(--gold);color:#141A3C;font-weight:700}
+/* 演示控制 */
+.controls{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);background:#fff;border-radius:16px;box-shadow:0 10px 30px rgba(20,26,60,.18);padding:10px 16px;width:auto;max-width:min(940px,calc(100vw - 24px));border:1px solid var(--line);display:flex;align-items:center;flex-wrap:wrap;gap:12px;z-index:100}
+.controls h3{font-size:12px;color:var(--navy);margin:0;letter-spacing:.5px;white-space:nowrap}
+.controls .ctl{margin-bottom:0;display:flex;align-items:center;gap:6px}
+.controls label{font-size:11px;color:var(--muted);display:inline-block;margin-bottom:0;white-space:nowrap}
+.controls select,.controls input[type=range]{width:auto;border:1px solid var(--line);border-radius:8px;padding:6px;font-size:12px}
+.controls select{min-width:132px}
+.controls input[type=range]{width:104px}
+.controls .btn{font-size:11px;padding:6px 14px;margin-bottom:0;width:auto}
+.toggle-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:0;gap:6px}
+.toggle-row label{font-size:11px;color:var(--muted);margin:0}
+.switch{width:38px;height:22px;background:#D5DCF0;border-radius:12px;position:relative;cursor:pointer;transition:background .2s}
+.switch.on{background:var(--navy)}
+.switch::after{content:'';position:absolute;width:18px;height:18px;background:#fff;border-radius:50%;top:2px;left:2px;transition:left .2s}
+.switch.on::after{left:18px}
+/* toast */
+#toast{position:absolute;left:50%;bottom:90px;transform:translateX(-50%) translateY(20px);background:var(--navy-deep);color:#fff;font-size:12px;padding:10px 18px;border-radius:20px;opacity:0;transition:all .3s;pointer-events:none;z-index:99;white-space:nowrap}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.phase-note{background:#FFF6E9;border:1px solid #F0D9B5;border-radius:12px;padding:10px 12px;font-size:11.5px;color:#8A6A2F;margin:0 12px 10px;line-height:1.5}
+.toast-host{position:relative;flex:1;display:flex;flex-direction:column}
+.sec-title{font-size:11px;color:var(--muted);font-weight:700;letter-spacing:.5px;padding:4px 16px 2px}
+.empty-hint{text-align:center;color:#9AA1BF;font-size:12px;padding:30px 20px;line-height:1.7}
+.footer-note{text-align:center;font-size:11px;color:var(--muted);margin-top:14px;line-height:1.6}
+@media(max-width:900px){.controls{position:static;transform:none;width:390px;margin:16px auto 0}}
+</style>
+</head>
+<body>
+
+<div class="page-head">
+  <h1>批灵 · 快批智能体独立产品线</h1>
+  <p>每日工作卡 · 微信端（老板）+ App端（确认台）双端原型 · 对应 PRD v1.0</p>
+</div>
+
+<div class="phone">
+  <div class="screen" id="screen">
+    <div class="statusbar"><span>9:41</span><span>📶 🔋 100%</span></div>
+    <div class="toast-host">
+      <div id="app-root"></div>
+      <div id="toast">已复制到剪贴板 ✓</div>
+    </div>
+  </div>
+</div>
+
+<div class="controls">
+  <h3>演示控制台</h3>
+  <div class="ctl">
+    <label>当前端</label>
+    <select id="endpoint">
+      <option value="wechat">微信端 · 老板</option>
+      <option value="app">App端 · 确认台</option>
+    </select>
+  </div>
+  <div class="ctl">
+    <label>演示场景</label>
+    <select id="scenario">
+      <option value="card13">第13天 · 补货日工作卡</option>
+      <option value="card7">第7天 · 催收日工作卡</option>
+      <option value="card29">第29天 · 月报卡</option>
+      <option value="ask">问数 · 只聊自己的库</option>
+      <option value="draft">草稿单闭环 · 微信→App</option>
+      <option value="calendar">30天排班总览</option>
+    </select>
+  </div>
+  <div class="ctl">
+    <label>30天进度（模拟）</label>
+    <input type="range" id="daySlider" min="0" max="30" value="13">
+    <span style="font-size:10px;color:var(--muted)" id="dayLabel">第 13 / 30 天</span>
+  </div>
+  <div class="toggle-row">
+    <label>话术红线演示（不点同行）</label>
+    <div class="switch on" id="redlineToggle"></div>
+  </div>
+  <button class="btn" id="resetBtn">重置演示</button>
+</div>
+
+<div class="footer-note">数据为演示示意（老张珠宝批发等），非真实客户数据 · 确认制：AI 只生成草稿，老板点头才落地</div>
+
+<script>
+'use strict';
+/* ============ 状态 ============ */
+var state = {
+  endpoint: 'wechat',
+  scenario: 'card13',
+  day: 13,
+  redline: true,
+  phase: 3 // 当前阶段：1体检 2盯钱 3建议 4经营 5收官
+};
+
+var phases = ['数据体检', '盯钱账', '给建议', '主动经营', '月度收官'];
+
+/* 30天排班数据（对应 PRD F1 / 生成图纸） */
+var schedule = {
+  1:['昨日销售速报','体检'],2:['本月vs上月','体检'],3:['毛利概况','体检'],4:['欠款总览','体检'],
+  5:['库存+库龄','体检'],6:['客户总览','体检'],7:['催收第一弹','盯钱'],8:['断货预警','盯钱'],
+  9:['滞销清单','盯钱'],10:['大客户流失预警','盯钱'],11:['毛利异常','盯钱'],12:['欠款账龄','盯钱'],
+  13:['补货建议','建议'],14:['清仓方案','建议'],15:['客户分级','建议'],16:['价格体检','建议'],
+  17:['供应商分析','建议'],18:['第一周周报','建议'],19:['配货建议','经营'],20:['回访清单','经营'],
+  21:['节假日备货','经营'],22:['畅销滞销榜','经营'],23:['新客户跟进','经营'],24:['月中体检','经营'],
+  25:['品类结构','收官'],26:['客户贡献','收官'],27:['利润率','收官'],28:['库存周转','收官'],
+  29:['月度经营报告','收官'],30:['下月建议','收官']
+};
+
+/* ============ 微信端渲染 ============ */
+function msgLeft(html){return '<div class="msg left"><div class="bubble">'+html+'</div></div>';}
+function msgRight(html){return '<div class="msg right"><div class="bubble">'+html+'</div></div>';}
+
+function cardShell(day,title,badge,bodyHtml,actionsHtml){
+  return '<div class="workcard">'+
+    '<div class="card-head"><div><div class="d">'+phases[phaseOf(day)-1]+'阶段 · 第 '+day+' / 30 天</div><div class="t">'+title+'</div></div><span class="card-badge">'+badge+'</span></div>'+
+    '<div class="card-body">'+bodyHtml+'</div>'+
+    (actionsHtml?'<div class="actions">'+actionsHtml+'</div>':'')+
+  '</div>';
+}
+function phaseOf(day){
+  if(day<=6)return 1; if(day<=12)return 2; if(day<=18)return 3; if(day<=24)return 4; return 5;
+}
+function sec(lbl,valHtml){return '<div class="card-sec"><div class="lbl">'+lbl+'</div><div class="val">'+valHtml+'</div></div>';}
+function quoteBox(text,btn){return '<div class="quote">'+text+(btn?'<button class="copy-btn" onclick="copyText(\''+btn+'\')">复制</button>':'')+'</div>';}
+
+/* 第13天：补货日 */
+function card13(){
+  var body =
+    sec('今日AI替你干了什么','盯完了<span class="good">断货风险</span>和<span class="good">补货需求</span>')+
+    sec('结果','金饰手链 <b>38 款</b>库存只够 <b>5 天</b>，按销量+在途算好补货量：<br><b>建议进 60 条</b>（上周卖 42 条）')+
+    sec('对上游 · 催货话术', quoteBox('李总，上周订的100条手链明天能发吗？客户那边等着要，麻烦优先安排下，谢谢！','李总催货话术'))+
+    sec('补货单预览','<span style="font-size:12px">金饰手链 60 条 · 吊坠项链 35 条 · 耳钉套装 20 对<br>合计 ¥86,400（按供应商聚合）</span>');
+  var actions = '<button class="btn gold" onclick="copyText(\'补货单已复制\')">📋 复制补货单发工厂</button><button class="btn" onclick="toast(\'已改天再说，明天会提醒\')">改天再说</button>';
+  return msgLeft(cardShell(13,'补货日',state.day>=30?'旗舰':'专业版',body,actions));
+}
+
+/* 第7天：催收日 */
+function card7(){
+  var body =
+    sec('今日AI替你干了什么','盯完了<span class="money">欠款</span>，排好了今天该催谁')+
+    sec('结果','<b>王老板</b>欠 <span class="money">3.8 万</span> · 逾期 <b>12 天</b>（最大一笔）<br>李老板欠 1.2 万 · 逾期 5 天')+
+    sec('软催话术（关系好）', quoteBox('王老板，最近生意咋样？上批货那3.8万，您看这两天方便安排不？不急，您先忙～','软催话术'))+
+    sec('硬催话术（风险高）', quoteBox('李老板，您那笔1.2万已逾期30天，本周五前请安排一下，逾期太久按约定要暂停供货了。','硬催话术'))+
+    sec('节日催 · 备用','过年了，账清一清，大家来年好合作！');
+  var actions = '<button class="btn primary" onclick="copyText(\'软催话术已复制\')">💬 复制软催话术</button><button class="btn gold" onclick="copyText(\'硬催话术已复制\')">💬 硬催</button><button class="btn" onclick="toast(\'已忽略，明天换内容\')">忽略</button>';
+  return msgLeft(cardShell(7,'催收日',state.day>=30?'旗舰':'专业版',body,actions));
+}
+
+/* 第29天：月报 */
+function card29(){
+  var body =
+    sec('今日AI替你干了什么','写好了 <b>月度经营报告</b>（一页纸）')+
+    sec('本月成绩','销售 <b>¥126.8万</b> · 环比 <span class="good">+8.2%</span> · 毛利 ¥31.4万（24.8%）')+
+    sec('三个发现','1. 饰品品类贡献 41% 毛利，环比 +12%<br>2. 王老板欠款 3.8 万已逾期 12 天，建议本月重点催<br>3. 库龄超 90 天的压货 ¥22万，建议清仓')+
+    sec('下月建议','金饰手链按 90 条备货；对 5 个 30 天未采购客户做挽回')+
+    sec('报告正文（AI 润色）', quoteBox('本月经营平稳向好：销售 126.8 万，环比增长 8.2%，主要来自饰品品类的带动。需要关注的是应收与压货——王老板 3.8 万逾期 12 天，以及 22 万超 90 天库存。建议下月把回款和清仓作为两件大事来抓。','月报正文'));
+  var actions = '<button class="btn gold" onclick="copyText(\'月报已复制，可发朋友圈\')">📤 复制转朋友圈</button><button class="btn primary" onclick="toast(\'已解锁问答进阶：随便问！\')">解锁问答进阶 →</button>';
+  return msgLeft(cardShell(29,'月度收官',state.day>=30?'旗舰':'专业版',body,actions));
+}
+
+/* 问数场景 */
+function askView(){
+  var askHistory =
+    msgRight('王老板总共欠我多少？')+
+    msgLeft('<b>王老板</b>共欠 <span class="money">¥3.8万</span>，其中 <b>¥2.6万</b> 逾期超过 10 天。<br><span style="font-size:11px;color:var(--muted)">数据截至 07:30 · 来自您自己的系统</span>')+
+    msgRight('帮我查一下隔壁老周店的进货价')+
+    msgLeft('<div style="color:var(--navy);font-weight:600">我只能看您自己店的数据</div><div style="font-size:12px;margin-top:4px">别的店的数据我这边看不到，也永远不会看到。</div>');
+  var chips = '<div style="padding:10px 14px 2px"><span class="ask-chip" onclick="toast(\'好的问题！能帮你提前3天发现回款风险\')">💡 试试这样问：哪个客户回款最慢？</span><span class="ask-chip" onclick="toast(\'这个问题问得好，能帮你盯住断货\')">💡 下个月该进什么货？</span></div>';
+  var input = '<div class="chat-input"><input id="askInput" placeholder="问您的生意…" onkeydown="if(event.key===\'Enter\')askGo()"><button class="send-btn" onclick="askGo()">发送</button></div>';
+  return askHistory+chips+input;
+}
+function askGo(){
+  var v=document.getElementById('askInput').value.trim();
+  if(!v)return;
+  var node=document.getElementById('app-root');
+  var extra='';
+  if(v.indexOf('老王')>-1||v.indexOf('欠')>-1){extra=msgLeft('王老板共欠 <span class="money">¥3.8万</span>，逾期 12 天，是最大一笔。<br>要不要我生成一条催收话术？');}
+  else if(v.indexOf('隔壁')>-1||v.indexOf('别家')>-1||v.indexOf('老周')>-1){extra=msgLeft('<div style="color:var(--navy);font-weight:600">我只能看您自己店的数据</div>');}
+  else if(v.indexOf('进')>-1||v.indexOf('货')>-1){extra=msgLeft('金饰手链库存只够 5 天，建议进 <b>60 条</b>（按销量+在途算好）。<br>明天早上会有完整的补货建议卡。');}
+  else{extra=msgLeft('这个问题我得再想想——您店里的数据里暂时没找到对应答案，您可以换个问法试试。');}
+  node.insertAdjacentHTML('beforeend',msgRight(v)+extra);
+  node.scrollTop=node.scrollHeight;
+  document.getElementById('askInput').value='';
+}
+
+/* ============ App 端渲染 ============ */
+function appView(){
+  var nav='<div class="app-nav"><div class="tab active">首页</div><div class="tab">开单</div><div class="tab">AI助手</div><div class="tab">我的</div></div>';
+  var body='';
+  if(state.scenario==='draft'){
+    body = '<div class="sec-title" style="padding-top:12px">草稿单 · 待确认（1）</div>'+
+    '<div class="draft-card">'+
+      '<div class="draft-head"><div class="c">老张珠宝批发</div><span class="tag">AI 生成 · 带历史价</span></div>'+
+      '<div class="draft-row"><span class="k">金饰手链 ×20</span><span class="v">¥180 <span style="color:var(--green);font-size:10px">客户价</span></span></div>'+
+      '<div class="draft-row"><span class="k">吊坠项链 ×10</span><span class="v">¥260 <span style="color:var(--green);font-size:10px">客户价</span></span></div>'+
+      '<div class="draft-row"><span class="k">耳钉套装 ×5</span><span class="v">¥95 <span style="color:var(--green);font-size:10px">客户价</span></span></div>'+
+      '<div class="draft-row"><span class="k">合计</span><span class="v" style="color:var(--navy)">¥6,275</span></div>'+
+      '<div style="padding:8px 14px;font-size:11px;color:var(--muted)">来源：微信订单消息 · 与历史价一致 ✓ 确认后正式开单</div>'+
+    '</div>'+
+    '<div class="actions" style="margin:0 12px;border:1px solid var(--line);border-radius:14px">'+
+      '<button class="btn primary" onclick="toast(\'已确认，正式开单完成 ✅\')">✅ 确认开单</button>'+
+      '<button class="btn" onclick="toast(\'已驳回，可修改草稿\')">修改</button>'+
+    '</div>'+
+    '<div class="phase-note" style="margin-top:12px">💡 微信里收到的客户订单，AI 已生成带历史价的草稿单——您只需要点确认。</div>';
+  } else if(state.scenario==='calendar'){
+    body = appCalendar();
+  } else {
+    body = '<div class="sec-title" style="padding-top:12px">今日工作卡 · 同步自微信端</div>'+
+    (state.scenario==='card13'?card13Html():state.scenario==='card7'?card7Html():card29Html());
+  }
+  var tabbar='<div class="tabbar"><div class="t active"><span class="ic">🏠</span>首页</div><div class="t"><span class="ic">🧾</span>开单</div><div class="t"><span class="ic">🤖</span>AI助手</div><div class="t"><span class="ic">👤</span>我的</div></div>';
+  return nav+'<div style="flex:1;overflow-y:auto">'+body+'</div>'+tabbar;
+}
+function card13Html(){return '<div class="workcard" style="margin:12px"><div class="card-head"><div><div class="d">建议阶段 · 第 13 / 30 天</div><div class="t">补货日</div></div><span class="card-badge">专业版</span></div><div class="card-body">'+sec('结果','金饰手链 38 款库存只够 <b>5 天</b>，建议进 <b>60 条</b>')+sec('补货单','金饰手链 60 条 · 吊坠项链 35 条 · 耳钉套装 20 对<br>合计 ¥86,400')+'</div><div class="actions"><button class="btn gold" onclick="toast(\'补货单已复制\')">复制补货单</button><button class="btn" onclick="toast(\'已改天再说\')">改天再说</button></div></div>';}
+function card7Html(){return '<div class="workcard" style="margin:12px"><div class="card-head"><div><div class="d">盯钱账阶段 · 第 7 / 30 天</div><div class="t">催收日</div></div><span class="card-badge">专业版</span></div><div class="card-body">'+sec('结果','<b>王老板</b>欠 <span class="money">3.8 万</span> · 逾期 12 天<br>李老板欠 1.2 万 · 逾期 5 天')+'</div><div class="actions"><button class="btn primary" onclick="toast(\'软催话术已复制\')">复制软催话术</button><button class="btn" onclick="toast(\'已忽略\')">忽略</button></div></div>';}
+function card29Html(){return '<div class="workcard" style="margin:12px"><div class="card-head"><div><div class="d">月度收官 · 第 29 / 30 天</div><div class="t">月度经营报告</div></div><span class="card-badge">旗舰版</span></div><div class="card-body">'+sec('本月成绩','销售 <b>¥126.8万</b> · 环比 <span class="good">+8.2%</span> · 毛利 ¥31.4万')+sec('建议','下月金饰手链按 90 条备货；重点催王老板 3.8 万')+'</div><div class="actions"><button class="btn gold" onclick="toast(\'月报已复制\')">复制月报</button></div></div>';}
+
+/* 30天排班日历 */
+function appCalendar(){
+  var cells='';
+  for(var d=1;d<=30;d++){
+    var cls='cal-day';
+    if(d<state.day)cls+=' done';
+    if(d===state.day)cls+=' today';
+    if(d>state.day+2)cls+=' locked';
+    cells+='<div class="cal-day '+cls+'" onclick="if('+d+'<='+state.day+'){state.day='+d+';state.scenario=\'card\'+('+d+');render();}"><span class="num">'+d+'</span><span style="font-size:8px;overflow:hidden;max-width:100%">'+(schedule[d]?schedule[d][0].slice(0,5):'')+'</span></div>';
+  }
+  var phasesHtml='';
+  for(var i=0;i<5;i++){phasesHtml+='<span class="phase '+(phaseOf(state.day)===i+1?'cur':'')+'">'+(i+1)+'·'+phases[i]+'</span>';}
+  return '<div class="sec-title" style="padding-top:12px">30天经营陪跑 · 排班总览</div>'+
+    '<div class="phase-row">'+phasesHtml+'</div>'+
+    '<div class="cal-grid">'+cells+'</div>'+
+    '<div class="phase-note">💡 排班是活的：连续忽略某类内容，AI 会自动换成别的——第 '+state.day+' 天已完成'+(state.day-1)+' 件经营工作。</div>';
+}
+
+/* ============ 主渲染 ============ */
+function render(){
+  var root=document.getElementById('app-root');
+  var html='';
+  if(state.endpoint==='wechat'){
+    html+='<div class="wechat-banner">批灵 · 每日工作卡</div>'+
+    '<div class="wechat-top"><div class="avatar">批</div><div><div class="name">批灵智能体</div><div class="sub">已连接您的快批数据</div></div></div>'+
+    '<div class="chat-body" id="chatBody">';
+    if(state.scenario==='card13')html+=card13();
+    else if(state.scenario==='card7')html+=card7();
+    else if(state.scenario==='card29')html+=card29();
+    else if(state.scenario==='ask')html+=askView();
+    else if(state.scenario==='draft'){html+=msgLeft('收到 <b>老张珠宝批发</b> 发来的订单消息：')+msgLeft('<div style="background:#F6F8FC;border-radius:10px;padding:8px 10px;font-size:12px">金饰手链20条 吊坠项链10对 耳钉套装5对</div>')+msgLeft('已生成草稿单（带历史价），请到 <b>快批App</b> 确认 →')+msgLeft('<div style="font-size:11px;color:var(--green)">✅ 已推送到 App 确认台</div>');}
+    else if(state.scenario==='calendar'){html+='<div class="phase-note">30 天排班总览在 App 端展示，微信端每天只推当天的卡。</div>'+msgLeft('今天第 '+state.day+' 天：'+(schedule[state.day]?schedule[state.day][0]:'')+'。明天会准时推给您。');}
+    html+='</div>';
+    if(state.scenario==='ask'){ /* 问数输入已在 askView */ }
+  } else {
+    html=appView();
+  }
+  root.innerHTML=html;
+  var slider=document.getElementById('daySlider');
+  slider.value=state.day;
+  document.getElementById('dayLabel').textContent='第 '+state.day+' / 30 天';
+}
+
+/* 红线开关：演示"不点同行"与"点同行"的对比 */
+function toggleRedline(){
+  state.redline=!state.redline;
+  var sw=document.getElementById('redlineToggle');
+  sw.classList.toggle('on',state.redline);
+  if(state.scenario==='ask'&&state.endpoint==='wechat'){
+    var chip=document.querySelector('.ask-chip');
+    if(chip){
+      chip.innerHTML = state.redline ? '💡 试试这样问：哪个客户回款最慢？' : '❌ 反面演示：隔壁市场王老板也在问这个';
+      chip.style.background = state.redline ? '' : '#FDECEA';
+      chip.style.color = state.redline ? '' : 'var(--red)';
+      chip.style.borderColor = state.redline ? '' : '#F3C6C0';
+    }
+  }
+  toast(state.redline?'✅ 红线模式：教方法，不点同行':'⚠️ 反面演示：提同行 = 信任崩塌（正式版绝不允许）');
+}
+
+function copyText(t){toast(t);}
+function toast(m){
+  var t=document.getElementById('toast');
+  t.textContent=m;t.classList.add('show');
+  clearTimeout(t._timer);t._timer=setTimeout(function(){t.classList.remove('show');},1800);
+}
+
+/* ============ 事件绑定 ============ */
+document.getElementById('endpoint').addEventListener('change',function(){state.endpoint=this.value;render();});
+document.getElementById('scenario').addEventListener('change',function(){state.scenario=this.value;render();});
+document.getElementById('daySlider').addEventListener('input',function(){state.day=parseInt(this.value,10);render();});
+document.getElementById('redlineToggle').addEventListener('click',toggleRedline);
+document.getElementById('resetBtn').addEventListener('click',function(){state={endpoint:'wechat',scenario:'card13',day:13,redline:true};document.getElementById('redlineToggle').classList.add('on');render();toast('已重置');});
+
+window.__errs=[];
+window.addEventListener('error',function(e){window.__errs.push(String(e.message));});
+
+render();
+</script>
+</body>
+</html>

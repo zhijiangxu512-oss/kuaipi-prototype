@@ -3,505 +3,382 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>快批「新一代」产品原型 — 地图游戏式解锁演示</title>
+<title>批灵 · 快批智能体独立产品线原型 — 每日工作卡 + 双端演示</title>
 <style>
 :root{
   --navy:#1E2761; --navy-deep:#141A3C; --gold:#E8A33D; --ice:#CADCFC;
-  --bg:#EDF0F8; --card:#FFFFFF; --text:#1A1F36; --muted:#6A7194;
-  --line:#E3E8F4; --green:#2E9E6B; --red:#C0392B; --warn:#B8860B;
+  --bg:#EDF0F8; --card:#FFFFFF; --text:#1A1F36; --muted:#6A7194; --line:#E3E8F4;
+  --green:#2E9E6B; --red:#C0392B; --warn:#B8860B;
   --radius:16px; --shadow:0 6px 24px rgba(20,26,60,.08);
 }
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{
-  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Helvetica Neue",Arial,sans-serif;
-  background:linear-gradient(135deg,#E8ECF7 0%,#DDE3F2 100%);
-  min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px; padding:24px;
-}
-/* ===== 手机框架 ===== */
-.phone{
-  width:390px; height:780px; background:var(--bg); border-radius:44px; overflow:hidden;
-  box-shadow:0 24px 60px rgba(20,26,60,.25), inset 0 0 0 8px #1a1f36;
-  position:relative; display:flex; flex-direction:column;
-}
-.screen{position:absolute; inset:0; overflow-y:auto; display:none; background:var(--bg); padding-bottom:86px}
-.screen.active{display:block; animation:fadeIn .28s ease}
-@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-/* ===== 通用组件 ===== */
-.statusbar{height:44px; display:flex; align-items:center; justify-content:space-between; padding:0 22px; font-size:12px; color:var(--text); font-weight:600}
-.statusbar .time{font-family:"SF Mono",Menlo,monospace; font-size:13px}
-.appbar{padding:4px 18px 12px; display:flex; align-items:center; justify-content:space-between}
-.appbar h1{font-size:20px; font-weight:800; color:var(--navy); letter-spacing:.5px}
-.appbar .sub{font-size:11px; color:var(--muted); margin-top:2px}
-.chip{display:inline-flex; align-items:center; gap:4px; background:var(--navy); color:#fff; font-size:11px; font-weight:700; padding:5px 10px; border-radius:20px}
-.chip.gold{background:var(--gold); color:var(--navy-deep)}
-.btn{display:block; width:100%; border:none; border-radius:14px; padding:15px; font-size:16px; font-weight:700; cursor:pointer; transition:transform .12s, opacity .2s}
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}
+body{background:#E9EDF8;display:flex;flex-direction:column;align-items:center;padding:28px 12px;min-height:100vh}
+.page-head{text-align:center;margin-bottom:20px;color:var(--navy-deep)}
+.page-head h1{font-size:22px;letter-spacing:.5px}
+.page-head p{font-size:13px;color:var(--muted);margin-top:6px}
+.phone{width:390px;background:var(--bg);border-radius:44px;padding:14px;box-shadow:0 20px 60px rgba(20,26,60,.25);border:1px solid #D5DCF0;position:relative}
+.screen{background:var(--card);border-radius:34px;height:760px;overflow:hidden;position:relative;display:flex;flex-direction:column}
+.statusbar{display:flex;justify-content:space-between;padding:12px 22px 4px;font-size:12px;color:var(--text);font-weight:600;background:var(--card)}
+/* ===== 微信端 ===== */
+.wechat-banner{background:var(--navy);color:#fff;text-align:center;padding:6px;font-size:11px;letter-spacing:.5px}
+.wechat-top{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--line)}
+.avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--navy),#4A5BC7);display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:700}
+.wechat-top .name{font-size:15px;font-weight:600}
+.wechat-top .sub{font-size:11px;color:var(--muted)}
+.chat-body{flex:1;overflow-y:auto;padding:14px;background:#F4F6FB}
+.msg{max-width:88%;margin-bottom:14px;display:flex;flex-direction:column}
+.msg.left{align-items:flex-start}
+.msg.right{align-items:flex-end;margin-left:auto}
+.bubble{padding:11px 14px;border-radius:16px;font-size:13.5px;line-height:1.6;color:var(--text);box-shadow:0 1px 3px rgba(20,26,60,.06)}
+.msg.left .bubble{background:#fff;border-top-left-radius:4px}
+.msg.right .bubble{background:var(--navy);color:#fff;border-top-right-radius:4px}
+.msg.right .bubble .small{color:#A8B0CC;font-size:11px}
+.time-tag{font-size:10px;color:#9AA1BF;margin:2px 4px}
+/* 工作卡 */
+.workcard{background:#fff;border-radius:18px;box-shadow:var(--shadow);overflow:hidden;border:1px solid var(--line);margin-bottom:6px}
+.card-head{background:linear-gradient(135deg,var(--navy),#2A3588);color:#fff;padding:12px 14px;display:flex;justify-content:space-between;align-items:center}
+.card-head .d{font-size:11px;opacity:.85}
+.card-head .t{font-size:14px;font-weight:700}
+.card-badge{background:var(--gold);color:#141A3C;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px}
+.card-body{padding:13px 14px}
+.card-sec{margin-bottom:10px}
+.card-sec .lbl{font-size:10.5px;color:var(--muted);font-weight:600;letter-spacing:.5px;margin-bottom:3px}
+.card-sec .val{font-size:13.5px;color:var(--text);line-height:1.55}
+.money{color:var(--red);font-weight:700}
+.good{color:var(--green);font-weight:700}
+.quote{background:#F6F8FC;border-radius:12px;padding:10px 12px;font-size:12.5px;color:var(--text);border:1px dashed #C6CFE8;margin-top:6px;line-height:1.55;position:relative}
+.copy-btn{position:absolute;right:8px;bottom:8px;background:var(--gold);color:#141A3C;border:none;font-size:10.5px;font-weight:700;padding:4px 10px;border-radius:14px;cursor:pointer}
+.copy-btn:hover{background:#F0B558}
+.actions{display:flex;gap:8px;padding:10px 14px;border-top:1px solid var(--line)}
+.btn{flex:1;text-align:center;padding:9px 0;border-radius:12px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid var(--line);background:#fff;color:var(--text);transition:all .15s}
+.btn:hover{border-color:var(--navy);color:var(--navy)}
+.btn.primary{background:var(--navy);color:#fff;border-color:var(--navy)}
+.btn.primary:hover{background:#2A3588}
+.btn.gold{background:var(--gold);color:#141A3C;border-color:var(--gold)}
+.btn.gold:hover{background:#F0B558}
 .btn:active{transform:scale(.97)}
-.btn.primary{background:var(--navy); color:#fff}
-.btn.gold{background:var(--gold); color:var(--navy-deep)}
-.btn.ghost{background:var(--card); color:var(--navy); border:1.5px solid var(--line)}
-.btn.sm{width:auto; padding:9px 16px; font-size:13px; border-radius:10px}
-.btn[disabled]{opacity:.4; pointer-events:none}
-.card{background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); padding:16px; margin:0 16px 12px}
-.section-label{font-size:12px; font-weight:800; color:var(--muted); letter-spacing:1px; padding:8px 18px 6px}
-/* 底部导航 */
-.tabbar{position:absolute; bottom:0; left:0; right:0; background:rgba(255,255,255,.96); backdrop-filter:blur(10px); border-top:1px solid var(--line); display:flex; padding:8px 12px 22px; z-index:50}
-.tab{flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; font-size:10.5px; color:var(--muted); cursor:pointer; padding:6px 0; border-radius:10px}
-.tab.active{color:var(--navy); font-weight:800}
-.tab .t-ico{width:22px; height:22px; border-radius:7px; background:currentColor; opacity:.15; position:relative}
-.tab.active .t-ico{opacity:.22}
-/* 探索进度条 */
-.map-progress{display:flex; gap:6px; margin:2px 18px 14px; align-items:center}
-.map-cell{flex:1; height:10px; border-radius:5px; background:#D8DEEF; position:relative; transition:all .5s}
-.map-cell.lit{background:var(--gold); box-shadow:0 0 8px rgba(232,163,61,.5)}
-.map-cell.locked::after{content:"🔒"; position:absolute; top:-3px; right:-2px; font-size:9px; opacity:.6}
-.map-label{font-size:10px; color:var(--muted); margin-left:4px; white-space:nowrap}
-/* 任务卡 */
-.task-row{display:flex; align-items:center; gap:12px; padding:13px 0; border-bottom:1px solid var(--line)}
-.task-row:last-child{border-bottom:none}
-.task-check{width:26px; height:26px; border-radius:50%; border:2px solid var(--line); flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:14px; color:#fff; transition:all .3s}
-.task-check.done{background:var(--green); border-color:var(--green)}
-.task-row h4{font-size:14.5px; font-weight:700; color:var(--text)}
-.task-row p{font-size:11.5px; color:var(--muted); margin-top:2px}
-.task-row .cnt{margin-left:auto; font-size:12px; font-weight:800; color:var(--muted)}
-.task-row .cnt b{color:var(--navy)}
-/* 功能网格 */
-.func-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px; padding:0 16px}
-.func{background:var(--card); border-radius:14px; box-shadow:var(--shadow); padding:14px; cursor:pointer; transition:transform .12s}
-.func:active{transform:scale(.97)}
-.func .f-ico{width:38px; height:38px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:18px; margin-bottom:9px; font-weight:800; color:#fff}
-.func h3{font-size:14px; font-weight:800; color:var(--text)}
-.func p{font-size:10.5px; color:var(--muted); margin-top:2px; line-height:1.4}
-.func.locked{opacity:.55; filter:saturate(.4)}
-.func .lock-tag{display:inline-block; margin-top:6px; font-size:9.5px; font-weight:700; color:var(--muted); background:#EEF1F9; padding:2px 7px; border-radius:8px}
-/* 识别字段 */
-.rec-field{display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px dashed var(--line)}
-.rec-field:last-child{border-bottom:none}
-.rec-field .k{width:56px; font-size:12px; color:var(--muted); flex-shrink:0}
-.rec-field .v{font-size:13.5px; font-weight:700; color:var(--text); flex:1}
-.conf{font-size:10px; font-weight:800; padding:2px 7px; border-radius:8px; flex-shrink:0}
-.conf.hi{background:#E6F4EC; color:var(--green)}
-.conf.mid{background:#FFF3E0; color:#B8860B}
-.conf.low{background:#FDECEA; color:var(--red)}
-/* 开单 tabs */
-.tabs{display:flex; gap:6px; margin:0 16px 12px; background:#E6EAF6; border-radius:12px; padding:4px}
-.tabs button{flex:1; border:none; background:transparent; padding:9px; border-radius:9px; font-size:13px; font-weight:700; color:var(--muted); cursor:pointer}
-.tabs button.active{background:#fff; color:var(--navy); box-shadow:0 2px 8px rgba(20,26,60,.08)}
-.tabpane{display:none}
-.tabpane.active{display:block}
-/* 提示条 */
-.notice{border-radius:12px; padding:11px 13px; font-size:12px; margin:0 16px 12px; display:flex; gap:9px; align-items:flex-start; line-height:1.5}
-.notice.warn{background:#FFF6E9; border:1px solid #F0D9B5; color:#8A5A17}
-.notice.err{background:#FDECEA; border:1px solid #F3C6C0; color:#8F2A20}
-.notice.ok{background:#E6F4EC; border:1px solid #BFDCCB; color:#1E6B46}
-.notice.soft{background:#EEF1F9; border:1px solid var(--line); color:var(--muted)}
-.notice b{font-weight:800}
-.notice .act{margin-left:auto; flex-shrink:0; font-weight:800; color:var(--navy); cursor:pointer; text-decoration:underline}
-/* 订单行 */
-.order-row{display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px solid var(--line)}
-.order-row:last-child{border-bottom:none}
-.order-row .thumb{width:38px; height:38px; border-radius:10px; background:#EEF1F9; flex-shrink:0}
-.order-row h5{font-size:13px; font-weight:700}
-.order-row .meta{font-size:11px; color:var(--muted); margin-top:1px}
-.order-row .price{margin-left:auto; text-align:right}
-.order-row .price b{font-size:14px; color:var(--navy)}
-.order-row .price span{display:block; font-size:10px; color:var(--muted)}
-/* 日报 */
-.daily-item{display:flex; gap:11px; padding:12px 0; border-bottom:1px solid var(--line); align-items:flex-start}
-.daily-item:last-child{border-bottom:none}
-.daily-item .d-ico{width:32px; height:32px; border-radius:10px; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:15px; color:#fff; font-weight:800}
-.daily-item h5{font-size:13.5px; font-weight:800; color:var(--text)}
-.daily-item p{font-size:11.5px; color:var(--muted); margin-top:2px; line-height:1.45}
-/* 解锁动效 */
-.unlock-wrap{position:absolute; inset:0; background:rgba(20,26,60,.97); z-index:100; display:none; align-items:center; justify-content:center; flex-direction:column; text-align:center; padding:30px}
-.unlock-wrap.show{display:flex; animation:fadeIn .25s ease}
-.unlock-map{width:150px; height:150px; position:relative; margin-bottom:26px}
-.unlock-map .cell{position:absolute; border-radius:14px; background:#2A3579; transition:all .6s ease}
-.unlock-map .cell.new{background:var(--gold); box-shadow:0 0 30px rgba(232,163,61,.8); transform:scale(1.06)}
-.unlock-wrap h2{color:#fff; font-size:26px; font-weight:900; letter-spacing:2px}
-.unlock-wrap .reason{color:var(--ice); font-size:13.5px; margin-top:10px; line-height:1.6}
-.unlock-wrap .btn{margin-top:34px; max-width:240px}
-/* 演示控制（手机下方紧凑条） */
-.demo-panel{width:390px; max-width:100%; background:#fff; border-radius:18px; box-shadow:0 16px 40px rgba(20,26,60,.18); padding:14px 16px}
-.demo-panel .dp-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:10px}
-.demo-panel h3{font-size:13.5px; font-weight:800; color:var(--navy)}
-.demo-panel .hint{font-size:11px; color:var(--muted); line-height:1.5}
-.demo-btns{display:flex; gap:8px}
-.demo-btns .btn{flex:1; padding:11px 6px; font-size:12px; border-radius:11px; white-space:nowrap}
-.demo-panel .state{font-size:11.5px; color:var(--muted); line-height:1.6; margin-top:10px; padding:8px 11px; background:#F4F6FB; border-radius:10px}
-.demo-panel .state b{color:var(--navy)}
-.demo-panel .legend{margin-top:8px; font-size:10.5px; color:var(--muted); line-height:1.6}
-@media (max-width:900px){body{padding:12px; gap:12px}.demo-panel{width:100%}}
-/* 其他 */
-.photo-zone{background:linear-gradient(145deg,#E9EDF8,#DDE3F2); border-radius:14px; height:130px; display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:13px; font-weight:600; margin-bottom:4px; border:1.5px dashed #C3CCE4}
-.mic-zone{height:120px; display:flex; align-items:center; justify-content:center}
-.mic{width:64px; height:64px; border-radius:50%; background:var(--navy); display:flex; align-items:center; justify-content:center; color:#fff; font-size:24px; animation:pulse 1.6s infinite}
-@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(30,39,97,.35)}50%{box-shadow:0 0 0 16px rgba(30,39,97,0)}}
-.wechat-card{background:#F6F8FC; border-radius:12px; padding:12px; margin:0 16px 10px; font-size:13px; line-height:1.6}
-.wechat-card .who{font-weight:800; color:var(--navy); font-size:12.5px; margin-bottom:4px}
-.wechat-card .bubble{background:#fff; border-radius:10px; padding:8px 11px; display:inline-block; margin-top:4px; box-shadow:0 1px 3px rgba(20,26,60,.06)}
-.modal{position:absolute; inset:0; background:rgba(20,26,60,.5); z-index:90; display:none; align-items:flex-end}
-.modal.show{display:flex}
-.modal .sheet{background:#fff; border-radius:20px 20px 0 0; width:100%; padding:22px 18px 30px; animation:slideUp .25s ease}
-@keyframes slideUp{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
-.modal h3{font-size:16px; font-weight:800; color:var(--navy); margin-bottom:8px}
-.modal p{font-size:13px; color:var(--text); line-height:1.6}
-.modal .quote{background:#F4F6FB; border-radius:10px; padding:11px 13px; font-size:13px; margin:12px 0; color:var(--text); line-height:1.6}
-.avatar{width:34px; height:34px; border-radius:50%; background:var(--navy); color:#fff; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:800; flex-shrink:0}
-
-#toast{position:absolute; left:50%; bottom:110px; transform:translateX(-50%) translateY(20px); background:var(--navy-deep); color:#fff; font-size:13px; font-weight:700; padding:12px 20px; border-radius:12px; opacity:0; pointer-events:none; transition:all .3s ease; z-index:200; white-space:nowrap; box-shadow:0 8px 24px rgba(20,26,60,.3)}
-#toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
+/* 问数 */
+.ask-chip{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid #C6CFE8;color:var(--navy);font-size:12px;font-weight:600;padding:6px 12px;border-radius:20px;margin:3px;cursor:pointer}
+.ask-chip:hover{background:var(--ice)}
+.chat-input{display:flex;gap:8px;padding:10px 14px;background:#fff;border-top:1px solid var(--line)}
+.chat-input input{flex:1;border:1px solid var(--line);border-radius:20px;padding:9px 14px;font-size:13px;outline:none}
+.chat-input input:focus{border-color:var(--navy)}
+.send-btn{background:var(--navy);color:#fff;border:none;border-radius:20px;padding:0 16px;font-size:13px;font-weight:600;cursor:pointer}
+/* ===== App 端 ===== */
+.app-nav{display:flex;background:#fff;border-bottom:1px solid var(--line)}
+.app-nav .tab{flex:1;text-align:center;padding:10px 0;font-size:12px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent}
+.app-nav .tab.active{color:var(--navy);font-weight:700;border-bottom-color:var(--navy)}
+.tabbar{display:flex;background:#fff;border-top:1px solid var(--line);padding:6px 0 10px}
+.tabbar .t{flex:1;text-align:center;font-size:10px;color:var(--muted);cursor:pointer}
+.tabbar .t.active{color:var(--navy);font-weight:700}
+.tabbar .t .ic{font-size:18px;display:block;margin-bottom:2px}
+/* 草稿确认 */
+.draft-card{background:#fff;border-radius:16px;border:1px solid var(--line);margin:12px;overflow:hidden;box-shadow:var(--shadow)}
+.draft-head{display:flex;justify-content:space-between;align-items:center;padding:11px 14px;border-bottom:1px solid var(--line)}
+.draft-head .c{font-size:13.5px;font-weight:700}
+.draft-row{display:flex;justify-content:space-between;padding:8px 14px;font-size:12.5px;border-bottom:1px solid #F1F3FA}
+.draft-row .k{color:var(--muted)}
+.draft-row .v{font-weight:600}
+.draft-row .tag{font-size:10px;background:#E6F4EC;color:var(--green);font-weight:700;padding:2px 7px;border-radius:10px}
+/* 排班日历 */
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;padding:12px}
+.cal-day{aspect-ratio:1;border-radius:10px;background:#F1F3FA;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:10px;color:var(--muted);cursor:pointer;position:relative}
+.cal-day .num{font-size:12px;font-weight:700;color:var(--text)}
+.cal-day.done{background:#E6F4EC;color:var(--green)}
+.cal-day.done .num{color:var(--green)}
+.cal-day.today{background:var(--navy);color:#fff}
+.cal-day.today .num{color:#fff}
+.cal-day.locked{opacity:.4}
+.phase-row{display:flex;gap:6px;padding:4px 12px 10px;flex-wrap:wrap}
+.phase{font-size:10px;background:#EEF1F9;color:var(--muted);padding:4px 9px;border-radius:12px}
+.phase.cur{background:var(--gold);color:#141A3C;font-weight:700}
+/* 演示控制 */
+.controls{position:fixed;right:24px;top:50%;transform:translateY(-50%);background:#fff;border-radius:16px;box-shadow:var(--shadow);padding:14px 16px;width:230px;border:1px solid var(--line)}
+.controls h3{font-size:12px;color:var(--navy);margin-bottom:10px;letter-spacing:.5px}
+.controls .ctl{margin-bottom:8px}
+.controls label{font-size:11px;color:var(--muted);display:block;margin-bottom:4px}
+.controls select,.controls input[type=range]{width:100%;border:1px solid var(--line);border-radius:8px;padding:6px;font-size:12px}
+.controls .btn{font-size:11px;padding:6px 0;margin-bottom:6px}
+.toggle-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.toggle-row label{font-size:11px;color:var(--muted);margin:0}
+.switch{width:38px;height:22px;background:#D5DCF0;border-radius:12px;position:relative;cursor:pointer;transition:background .2s}
+.switch.on{background:var(--navy)}
+.switch::after{content:'';position:absolute;width:18px;height:18px;background:#fff;border-radius:50%;top:2px;left:2px;transition:left .2s}
+.switch.on::after{left:18px}
+/* toast */
+#toast{position:absolute;left:50%;bottom:90px;transform:translateX(-50%) translateY(20px);background:var(--navy-deep);color:#fff;font-size:12px;padding:10px 18px;border-radius:20px;opacity:0;transition:all .3s;pointer-events:none;z-index:99;white-space:nowrap}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.phase-note{background:#FFF6E9;border:1px solid #F0D9B5;border-radius:12px;padding:10px 12px;font-size:11.5px;color:#8A6A2F;margin:0 12px 10px;line-height:1.5}
+.toast-host{position:relative;flex:1;display:flex;flex-direction:column}
+.sec-title{font-size:11px;color:var(--muted);font-weight:700;letter-spacing:.5px;padding:4px 16px 2px}
+.empty-hint{text-align:center;color:#9AA1BF;font-size:12px;padding:30px 20px;line-height:1.7}
+.footer-note{text-align:center;font-size:11px;color:var(--muted);margin-top:14px;line-height:1.6}
+@media(max-width:900px){.controls{position:static;transform:none;width:390px;margin:16px auto 0}}
 </style>
 </head>
 <body>
 
-<!-- ============ 手机 ============ -->
+<div class="page-head">
+  <h1>批灵 · 快批智能体独立产品线</h1>
+  <p>每日工作卡 · 微信端（老板）+ App端（确认台）双端原型 · 对应 PRD v1.0</p>
+</div>
+
 <div class="phone">
-  <div class="statusbar"><span class="time">9:41</span><span>📶 🔋</span></div>
-
-  <!-- W1 欢迎页 -->
-  <div class="screen active" id="s-welcome">
-    <div style="height:70px"></div>
-    <div style="text-align:center; padding:0 30px">
-      <div style="width:76px;height:76px;border-radius:22px;background:var(--navy);margin:0 auto 18px;display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:900;color:var(--gold)">快</div>
-      <h1 style="font-size:24px;font-weight:900;color:var(--navy)">欢迎来到快批新一代</h1>
-      <p style="font-size:13.5px;color:var(--muted);margin-top:10px;line-height:1.7">我们先从最简单的开始。<br>你只需要完成 3 件事，地图会慢慢变大。</p>
-    </div>
-    <div style="padding:24px 30px">
-      <div class="task-row" style="border:none"><div class="task-check" style="border-color:var(--gold)">1</div><div><h4>建商品档案</h4><p>拍张照片，AI 帮你填好</p></div></div>
-      <div class="task-row" style="border:none"><div class="task-check" style="border-color:var(--gold)">2</div><div><h4>录一个客户</h4><p>你的客户都在系统里了</p></div></div>
-      <div class="task-row" style="border:none"><div class="task-check" style="border-color:var(--gold)">3</div><div><h4>开第一张单</h4><p>说一句话就能开单</p></div></div>
-    </div>
-    <div style="padding:0 30px; margin-top:8px">
-      <button class="btn primary" onclick="go('s-home')">开始探索 →</button>
-      <p style="text-align:center;font-size:11px;color:var(--muted);margin-top:14px">已开通 10 年 · 3万+ 批发商的选择</p>
+  <div class="screen" id="screen">
+    <div class="statusbar"><span>9:41</span><span>📶 🔋 100%</span></div>
+    <div class="toast-host">
+      <div id="app-root"></div>
+      <div id="toast">已复制到剪贴板 ✓</div>
     </div>
   </div>
-
-  <!-- W2 新手村首页 -->
-  <div class="screen" id="s-home">
-    <div class="appbar"><div><h1>老张珠宝批发</h1><div class="sub">新手村 · 探索进度 <b id="progNum" style="color:var(--gold)">1</b>/5</div></div><span class="chip">新手村</span></div>
-    <div class="map-progress">
-      <div class="map-cell lit" id="mc0"></div><div class="map-cell locked" id="mc1"></div><div class="map-cell locked" id="mc2"></div><div class="map-cell locked" id="mc3"></div><div class="map-cell locked" id="mc4"></div>
-      <span class="map-label" id="mapLabel">地图还没全开</span>
-    </div>
-    <div class="card" style="background:var(--navy); box-shadow:0 8px 24px rgba(30,39,97,.3)">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><div class="avatar" style="background:var(--gold);color:var(--navy-deep)">AI</div><div><b style="color:#fff;font-size:13.5px">今天要做 3 件事</b><p style="color:var(--ice);font-size:11px;margin-top:1px">完成一件，地图亮一格</p></div></div>
-      <div id="taskList" style="color:#fff;font-size:12.5px;line-height:2"></div>
-      <button class="btn gold" style="margin-top:10px" onclick="go('s-tasks')">去完成 →</button>
-    </div>
-    <div class="section-label">常用功能</div>
-    <div class="func-grid">
-      <div class="func" onclick="go('s-order')"><div class="f-ico" style="background:var(--gold)">单</div><h3>开单</h3><p>扫码 · 语音 · 微信转单</p></div>
-      <div class="func" onclick="go('s-arch')"><div class="f-ico" style="background:var(--navy)">档</div><h3>商品档案</h3><p>拍照建档，AI 代填</p></div>
-      <div class="func"><div class="f-ico" style="background:#6C7BB8">客</div><h3>我的客户</h3><p>客户都在这里</p></div>
-      <div class="func locked"><div class="f-ico" style="background:#A8B0CC">库</div><h3>库存管理</h3><p>智能补货 · 断货预警</p><span class="lock-tag">🔒 开出 10 单后解锁</span></div>
-      <div class="func locked"><div class="f-ico" style="background:#A8B0CC">欠</div><h3>欠款管理</h3><p>自动催收 · 信用分</p><span class="lock-tag">🔒 第一笔欠款后解锁</span></div>
-      <div class="func locked"><div class="f-ico" style="background:#A8B0CC">找</div><h3>仓库找货</h3><p>AI 找货 · 拣货路线</p><span class="lock-tag">🔒 解锁库存后出现</span></div>
-    </div>
-    <div class="notice soft" style="margin-top:14px">💡 完成更多任务，地图会越来越大——AI 装备也会一件件解锁</div>
-  </div>
-
-  <!-- W3 任务卡 -->
-  <div class="screen" id="s-tasks">
-    <div class="appbar"><div><h1>新手任务</h1><div class="sub">3 步上手，地图变大</div></div><span class="chip gold" id="taskChip">0/3</span></div>
-    <div class="card">
-      <div class="task-row"><div class="task-check" id="tk1">✓</div><div><h4>建 2 个商品档案</h4><p>拍张照片，AI 帮你填好</p></div><div class="cnt"><b id="arcCnt">0</b>/2</div><button class="btn sm ghost" onclick="go('s-arch')">去建档</button></div>
-      <div class="task-row"><div class="task-check" id="tk2">✓</div><div><h4>录 1 个客户</h4><p>老客户录进来，AI 帮你分析</p></div><div class="cnt"><b id="cusCnt">0</b>/1</div><button class="btn sm ghost" onclick="go('s-home')">去录入</button></div>
-      <div class="task-row"><div class="task-check" id="tk3">✓</div><div><h4>开 1 张单</h4><p>说一句话就能开单</p></div><div class="cnt"><b id="ordCnt">0</b>/1</div><button class="btn sm ghost" onclick="go('s-order')">去开单</button></div>
-    </div>
-    <div class="notice ok" id="taskDoneNotice" style="display:none">🎉 新手任务完成！地图解锁了 <b>库存管理</b></div>
-  </div>
-
-  <!-- W4 拍照建档 -->
-  <div class="screen" id="s-arch">
-    <div class="appbar"><div><h1>新建商品</h1><div class="sub">拍照建档 · 确认制</div></div><span class="chip">AI 建档</span></div>
-    <div class="photo-zone" id="photoZone" onclick="this.innerHTML='📷 已拍照 — 识别中…'" style="cursor:pointer">📷 拍一张商品照片（点我模拟拍照）</div>
-    <div class="notice soft" style="margin-top:8px">AI 正在识别… 已按你店铺的习惯生成草稿，可修改</div>
-    <div class="card">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><b style="font-size:14px;color:var(--navy)">AI 识别结果（草稿）</b><span style="font-size:10.5px;color:var(--muted)">未确认 · 不会保存</span></div>
-      <div class="rec-field"><span class="k">名称</span><span class="v">18K金项链-淡水珍珠</span><span class="conf hi">92%</span></div>
-      <div class="rec-field"><span class="k">分类</span><span class="v">珠宝首饰 › 项链</span><span class="conf hi">88%</span></div>
-      <div class="rec-field"><span class="k">材质</span><span class="v">18K金</span><span class="conf hi">96%</span></div>
-      <div class="rec-field"><span class="k">克重</span><span class="v">待人工核实</span><span class="conf low">34%</span></div>
-      <div class="rec-field"><span class="k">颜色</span><span class="v">白色</span><span class="conf mid">74%</span></div>
-      <div class="rec-field" style="border-bottom:none"><span class="k">建议售价</span><span class="v">¥368 <span style="font-size:10px;color:var(--muted);font-weight:400">按历史加价率 28%</span></span><span class="conf mid">AI建议</span></div>
-    </div>
-    <div class="notice warn">⚠ <span><b>克重识别置信度低</b>，已标记「待人工核实」——珠宝按克计价，这个字段必须人工确认。</span></div>
-    <div style="display:flex;gap:10px;padding:0 16px">
-      <button class="btn ghost" style="flex:1">重新拍</button>
-      <button class="btn primary" style="flex:2" onclick="finishArchive()">确认建档 ✓</button>
-    </div>
-  </div>
-
-  <!-- W5 开单 -->
-  <div class="screen" id="s-order">
-    <div class="appbar"><div><h1>开单</h1><div class="sub">三种方式，说/拍/扫都能开</div></div><span class="chip">最快 30 秒</span></div>
-    <div class="tabs">
-      <button class="active" onclick="switchTab(this,'p-scan')">扫码开单</button>
-      <button onclick="switchTab(this,'p-voice')">语音开单</button>
-      <button onclick="switchTab(this,'p-wx')">微信转单</button>
-    </div>
-    <div class="tabpane active" id="p-scan">
-      <div class="card">
-        <div class="order-row"><div class="avatar">王</div><div><h5>深圳王老板</h5><div class="meta">欠款 ¥20,000 · 未超额度 ✓</div></div></div>
-        <div class="order-row"><div class="thumb"></div><div><h5>纯棉T恤-白色</h5><div class="meta">库存 80 · ¥13.5/件</div></div><div class="price"><b>¥1,350</b><span>100 件</span></div></div>
-      </div>
-      <div class="notice err">⚠ <span>单价 <b>¥135</b> 与历史价 <b>¥13.5</b> 相差 10 倍——<b>可能少按了一个小数点</b>。<span class="act" onclick="this.parentElement.innerHTML='已修正为 ¥13.5 ✓'">修正为 ¥13.5</span></span></div>
-      <div class="notice soft">💡 老规矩：该客户常购 白色100 + 黑色50，上次价 ¥13.5 —— <span class="act" onclick="this.parentElement.innerHTML='已带出：白色100件 + 黑色50件 ✓'">一键带出</span></div>
-      <div style="padding:0 16px"><button class="btn primary" onclick="finishOrder()">确认开单（¥1,350）</button></div>
-    </div>
-    <div class="tabpane" id="p-voice">
-      <div class="mic-zone"><div class="mic">🎤</div></div>
-      <p style="text-align:center;font-size:12.5px;color:var(--muted);padding:0 20px">说：「王老板要 100 件纯棉T恤，白色，还是 13 块 5，发深圳」<br><span style="font-size:11px">支持粤语</span></p>
-      <div style="padding:16px"><button class="btn primary" onclick="go('s-voice')">🎤 说完了，生成单据</button></div>
-    </div>
-    <div class="tabpane" id="p-wx">
-      <div class="wechat-card"><div class="who">深圳王老板</div>在吗？上次那批白色T恤再给我来 100 件，还是 13 块 5，发深圳<img style="display:block;width:60px;height:60px;border-radius:8px;background:#DDE3F2;margin-top:8px"></div>
-      <div class="notice ok">✓ AI 已识别：客户=王老板、货品=纯棉T恤-白、数量=100、单价=¥13.5（与历史一致）</div>
-      <div style="padding:0 16px"><button class="btn primary" onclick="finishOrder()">一键转成单据 →</button></div>
-    </div>
-  </div>
-
-  <!-- W6 语音开单确认 -->
-  <div class="screen" id="s-voice">
-    <div class="appbar"><div><h1>语音开单</h1><div class="sub">AI 已听懂，请确认</div></div><span class="chip gold">草稿</span></div>
-    <div class="card">
-      <div class="rec-field"><span class="k">客户</span><span class="v">深圳王老板</span><span class="conf hi">96%</span></div>
-      <div class="rec-field"><span class="k">货品</span><span class="v">纯棉T恤-白色</span><span class="conf hi">93%</span></div>
-      <div class="rec-field"><span class="k">数量</span><span class="v">100 件 <span style="font-size:10.5px;color:var(--red);font-weight:400">⚠ 库存仅 80</span></span><span class="conf mid">92%</span></div>
-      <div class="rec-field"><span class="k">单价</span><span class="v">¥13.5 <span style="font-size:10.5px;color:var(--muted);font-weight:400">与历史价一致 ✓</span></span><span class="conf hi">98%</span></div>
-      <div class="rec-field" style="border-bottom:none"><span class="k">备注</span><span class="v">发深圳（已提取）</span><span class="conf mid">AI</span></div>
-    </div>
-    <div class="notice warn">❓ <span><b>库存只有 80，另外 20 件要不要换黑色？</b>（黑款库存 120）<span class="act" onclick="this.innerHTML='已改为：白色 80 + 黑色 20 ✓'">换黑色 20</span></span></div>
-    <div style="display:flex;gap:10px;padding:0 16px">
-      <button class="btn ghost" style="flex:1">重新说</button>
-      <button class="btn primary" style="flex:2" onclick="finishOrder()">确认开单 ✓</button>
-    </div>
-  </div>
-
-  <!-- W8 全图首页 -->
-  <div class="screen" id="s-full">
-    <div class="appbar"><div><h1>老张珠宝批发</h1><div class="sub">地图全开 · AI 经营助手</div></div><span class="chip" style="background:var(--green)">全图 ✓</span></div>
-    <div class="card" style="background:var(--navy); box-shadow:0 8px 24px rgba(30,39,97,.3)">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px"><div class="avatar" style="background:var(--gold);color:var(--navy-deep)">AI</div><div><b style="color:#fff;font-size:13.5px">早上好，今天有 3 件事</b></div></div>
-      <div class="daily-item" style="border-color:rgba(255,255,255,.12)"><div class="d-ico" style="background:var(--red)">催</div><div><h5 style="color:#fff">王老板 ¥8,500 逾期 32 天</h5><p style="color:var(--ice)">风险高，今天该催了 →</p></div></div>
-      <div class="daily-item" style="border-color:rgba(255,255,255,.12)"><div class="d-ico" style="background:var(--gold);color:var(--navy-deep)">补</div><div><h5 style="color:#fff">T恤类库存还能撑 10 天</h5><p style="color:var(--ice)">建议本周补货 →</p></div></div>
-      <div class="daily-item" style="border:none"><div class="d-ico" style="background:#6C7BB8">访</div><div><h5 style="color:#fff">李姐 25 天没进货了</h5><p style="color:var(--ice)">她平均 14 天进一次 · 流失预警 →</p></div></div>
-    </div>
-    <div class="section-label">全部功能（老板大图）</div>
-    <div class="func-grid">
-      <div class="func" onclick="go('s-order')"><div class="f-ico" style="background:var(--gold)">单</div><h3>开单</h3><p>扫码 · 语音 · 微信转单</p></div>
-      <div class="func" onclick="go('s-arch')"><div class="f-ico" style="background:var(--navy)">档</div><h3>商品档案</h3><p>拍照建档 · 同款行情</p></div>
-      <div class="func"><div class="f-ico" style="background:#6C7BB8">客</div><h3>客户管理</h3><p>流失预警 · 回访清单</p></div>
-      <div class="func"><div class="f-ico" style="background:#3E8E7E">库</div><h3>库存管理</h3><p>智能补货 · 断货预警</p></div>
-      <div class="func" onclick="go('s-debt')"><div class="f-ico" style="background:var(--red)">欠</div><h3>欠款管理</h3><p>自动催收 · 信用分</p></div>
-      <div class="func"><div class="f-ico" style="background:#B8860B">入</div><h3>入库</h3><p>拍照入库 · 差异识别</p></div>
-      <div class="func"><div class="f-ico" style="background:#5A6284">找</div><h3>仓库找货</h3><p>问一句就知道在哪</p></div>
-      <div class="func"><div class="f-ico" style="background:#7C6BB8">报</div><h3>经营报表</h3><p>问数 · 日报 · 行业对标</p></div>
-    </div>
-    <div class="section-label">AI 装备（能力包）</div>
-    <div class="notice ok" style="margin-top:2px">🎒 已解锁：语音开单 · 微信转单 · 智能配货 · 智能催收 —— <span class="act">试用中，14 天后升级</span></div>
-  </div>
-
-  <!-- W9 欠款催收 -->
-  <div class="screen" id="s-debt">
-    <div class="appbar"><div><h1>欠款管理</h1><div class="sub">今天该催 3 笔 · 共 ¥13,200</div></div><span class="chip" style="background:var(--red)">3 笔</span></div>
-    <div class="card">
-      <div class="order-row"><div class="avatar" style="background:var(--red)">王</div><div><h5>王老板 · ¥8,500</h5><div class="meta">逾期 32 天 · 信用分 52 · 风险高</div></div><button class="btn sm gold" onclick="showModal('m-send')">AI 代发提醒</button></div>
-      <div class="order-row"><div class="avatar" style="background:var(--warn)">张</div><div><h5>张姐 · ¥3,200</h5><div class="meta">逾期 12 天 · 信用分 68 · 风险中</div></div><button class="btn sm ghost" onclick="showModal('m-copy')">复制话术</button></div>
-      <div class="order-row" style="border:none"><div class="avatar" style="background:#6C7BB8">李</div><div><h5>李哥 · ¥1,500</h5><div class="meta">逾期 3 天 · 信用分 81 · 风险低</div></div><button class="btn sm ghost">稍后</button></div>
-    </div>
-    <div class="notice soft">💡 排序逻辑：逾期时长 × 金额 × 风险分。催收记录会自动沉淀进客户档案。</div>
-  </div>
-
-  <!-- W10 AI 配货建议 -->
-  <div class="screen" id="s-pei">
-    <div class="appbar"><div><h1>AI 配货建议</h1><div class="sub">帮你把压着的货变成钱</div></div><span class="chip gold">AI 业务员</span></div>
-    <div class="card">
-      <div style="font-size:12px;font-weight:800;color:var(--navy);margin-bottom:4px">🎯 王老板 · 该进货了</div>
-      <p style="font-size:12.5px;color:var(--text);line-height:1.6">他平均 14 天进一次货，已经 20 天没来了。上次进货：白色 100 + 黑色 50，单价 ¥13.5。</p>
-      <button class="btn sm primary" style="margin-top:10px">一键生成配货单 →</button>
-    </div>
-    <div class="card">
-      <div style="font-size:12px;font-weight:800;color:var(--navy);margin-bottom:4px">📦 滞销清仓 · 这款帽子压了 3 个月</div>
-      <p style="font-size:12.5px;color:var(--text);line-height:1.6">李姐买过同价位的帽子（3 个月内），推荐定向推送，建议降价 15%。</p>
-      <button class="btn sm gold" style="margin-top:10px" onclick="showModal('m-words')">生成推荐话术 →</button>
-    </div>
-    <div class="notice ok">闭环：AI 建议 → 你确认 → 发给客户 → 客户回「要」→ 自动转成单据</div>
-  </div>
-
-  <!-- 解锁动效 -->
-  <div class="unlock-wrap" id="unlockOverlay">
-    <div class="unlock-map" id="unlockMap"></div>
-    <h2 id="unlockTitle">新区域已解锁</h2>
-    <div class="reason" id="unlockReason"></div>
-    <button class="btn gold" id="unlockBtn" onclick="closeUnlock()">继续探索 →</button>
-  </div>
-
-  <!-- 底部导航 -->
-  <div class="tabbar">
-    <div class="tab active" id="tab-home" onclick="go('s-home')"><div class="t-ico"></div>首页</div>
-    <div class="tab" id="tab-order" onclick="go('s-order')"><div class="t-ico"></div>开单</div>
-    <div class="tab" id="tab-tasks" onclick="go('s-tasks')"><div class="t-ico"></div>任务</div>
-    <div class="tab" id="tab-me" onclick="go('s-full')"><div class="t-ico"></div>我的</div>
-  </div>
-
-  <!-- 模态：AI代发提醒 -->
-  <div class="modal" id="m-send">
-    <div class="sheet">
-      <h3>以你的名义发送？</h3>
-      <div class="quote">「张哥，5 月 12 日那笔货款 ¥8,500 方便的时候安排一下哈，谢谢啦」</div>
-      <p style="font-size:12px;color:var(--muted)">AI 代发的温和提醒 · 老板面子保住了 · 人情债让 AI 去要</p>
-      <div style="display:flex;gap:10px;margin-top:16px"><button class="btn ghost" style="flex:1" onclick="closeModal('m-send')">再改改</button><button class="btn primary" style="flex:1.6" onclick="closeModal('m-send');toast('已发送 ✓ 客户回复会自动沉淀进档案')">发送 ✓</button></div>
-    </div>
-  </div>
-  <!-- 模态：话术 -->
-  <div class="modal" id="m-words">
-    <div class="sheet">
-      <h3>推荐话术（复制即发）</h3>
-      <div class="quote">「李姐，这批新到的 XX 帽子你上次卖得不错，这次给你留了 50 件，按老价给你，你看要不要？」</div>
-      <div style="display:flex;gap:10px;margin-top:16px"><button class="btn ghost" style="flex:1" onclick="closeModal('m-words')">再生成</button><button class="btn primary" style="flex:1.6" onclick="closeModal('m-words');toast('已复制，去微信粘贴发送 ✓')">复制到微信 ✓</button></div>
-    </div>
-  </div>
-  <!-- 模态：话术复制（欠款） -->
-  <div class="modal" id="m-copy">
-    <div class="sheet">
-      <h3>催收话术（按客户关系生成）</h3>
-      <div class="quote">「张姐，咱们老关系了，6 月那批货的 ¥3,200 方便时转一下哈，月底要跟工厂结账了 🙏」</div>
-      <div style="display:flex;gap:10px;margin-top:16px"><button class="btn ghost" style="flex:1" onclick="closeModal('m-copy')">换一条</button><button class="btn primary" style="flex:1.6" onclick="closeModal('m-copy');toast('已复制 ✓')">复制 ✓</button></div>
-    </div>
-  </div>
-  <div id="toast"></div>
 </div>
 
-<!-- ============ 演示控制（手机下方） ============ -->
-<div class="demo-panel">
-  <div class="dp-head">
-    <h3>🎮 原型演示控制</h3>
-    <span class="hint">点按钮模拟客户行为，看地图怎么长大</span>
+<div class="controls">
+  <h3>演示控制台</h3>
+  <div class="ctl">
+    <label>当前端</label>
+    <select id="endpoint">
+      <option value="wechat">微信端 · 老板</option>
+      <option value="app">App端 · 确认台</option>
+    </select>
   </div>
-  <div class="demo-btns">
-    <button class="btn ghost" onclick="simArchive()">📷 建档</button>
-    <button class="btn ghost" onclick="simOrder()">🧾 开10单</button>
-    <button class="btn gold" onclick="simAll()">🚀 毕业</button>
-    <button class="btn ghost" onclick="resetDemo()">↺ 重置</button>
+  <div class="ctl">
+    <label>演示场景</label>
+    <select id="scenario">
+      <option value="card13">第13天 · 补货日工作卡</option>
+      <option value="card7">第7天 · 催收日工作卡</option>
+      <option value="card29">第29天 · 月报卡</option>
+      <option value="ask">问数 · 只聊自己的库</option>
+      <option value="draft">草稿单闭环 · 微信→App</option>
+      <option value="calendar">30天排班总览</option>
+    </select>
   </div>
-  <div class="state" id="demoState">状态：<b>新手村</b> ｜ 已建档：0/2 ｜ 已开单：0/10</div>
-  <p class="legend">🔒 未解锁功能在真实产品中<b>完全不可见</b>（隐藏而非置灰）——不知道有，就不会怕。对应 PRD：F9 地图解锁引擎 · FR-MAP-01~09</p>
+  <div class="ctl">
+    <label>30天进度（模拟）</label>
+    <input type="range" id="daySlider" min="0" max="30" value="13">
+    <span style="font-size:10px;color:var(--muted)" id="dayLabel">第 13 / 30 天</span>
+  </div>
+  <div class="toggle-row">
+    <label>话术红线演示（不点同行）</label>
+    <div class="switch on" id="redlineToggle"></div>
+  </div>
+  <button class="btn" id="resetBtn">重置演示</button>
 </div>
+
+<div class="footer-note">数据为演示示意（老张珠宝批发等），非真实客户数据 · 确认制：AI 只生成草稿，老板点头才落地</div>
 
 <script>
-// ===== 全局状态 =====
-const S = { archives:0, orders:0, full:false, screens:[] };
-const screens = ['s-welcome','s-home','s-tasks','s-arch','s-order','s-voice','s-full','s-debt','s-pei'];
-let curTab = 's-home';
+'use strict';
+/* ============ 状态 ============ */
+var state = {
+  endpoint: 'wechat',
+  scenario: 'card13',
+  day: 13,
+  redline: true,
+  phase: 3 // 当前阶段：1体检 2盯钱 3建议 4经营 5收官
+};
 
-function go(id, fromTab){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  const tabMap={'s-home':'tab-home','s-order':'tab-order','s-tasks':'tab-tasks','s-full':'tab-me','s-debt':'tab-me','s-pei':'tab-home','s-arch':'tab-home','s-voice':'tab-order','s-welcome':'tab-home'};
-  const tb=document.getElementById(tabMap[id]||'tab-home'); if(tb)tb.classList.add('active');
-  if(id==='s-welcome'){} 
-}
-function switchTab(btn, paneId){
-  btn.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  btn.parentElement.parentElement.querySelectorAll('.tabpane').forEach(p=>p.classList.remove('active'));
-  document.getElementById(paneId).classList.add('active');
-}
+var phases = ['数据体检', '盯钱账', '给建议', '主动经营', '月度收官'];
 
-// ===== 解锁 =====
-function fireUnlock(title, reason){
-  const map=document.getElementById('unlockMap');
-  map.innerHTML='';
-  // 5 格地图，第3格点亮
-  const cells=[[12,12,56,56],[82,12,56,56],[152,12,56,56],[12,82,56,56],[82,82,56,56]];
-  cells.forEach((c,i)=>{
-    const d=document.createElement('div'); d.className='cell'+(i===2?' new':''); d.style.cssText=`left:${c[0]}px;top:${c[1]}px;width:${c[2]}px;height:${c[3]}px`;
-    map.appendChild(d);
-  });
-  document.getElementById('unlockTitle').textContent=title;
-  document.getElementById('unlockReason').textContent=reason;
-  document.getElementById('unlockOverlay').classList.add('show');
-}
-function closeUnlock(){
-  document.getElementById('unlockOverlay').classList.remove('show');
-  refreshHome();
-}
+/* 30天排班数据（对应 PRD F1 / 生成图纸） */
+var schedule = {
+  1:['昨日销售速报','体检'],2:['本月vs上月','体检'],3:['毛利概况','体检'],4:['欠款总览','体检'],
+  5:['库存+库龄','体检'],6:['客户总览','体检'],7:['催收第一弹','盯钱'],8:['断货预警','盯钱'],
+  9:['滞销清单','盯钱'],10:['大客户流失预警','盯钱'],11:['毛利异常','盯钱'],12:['欠款账龄','盯钱'],
+  13:['补货建议','建议'],14:['清仓方案','建议'],15:['客户分级','建议'],16:['价格体检','建议'],
+  17:['供应商分析','建议'],18:['第一周周报','建议'],19:['配货建议','经营'],20:['回访清单','经营'],
+  21:['节假日备货','经营'],22:['畅销滞销榜','经营'],23:['新客户跟进','经营'],24:['月中体检','经营'],
+  25:['品类结构','收官'],26:['客户贡献','收官'],27:['利润率','收官'],28:['库存周转','收官'],
+  29:['月度经营报告','收官'],30:['下月建议','收官']
+};
 
-function refreshHome(){
-  const lit=1+Math.min(3,Math.floor((S.archives/2)+(S.orders/10)));
-  for(let i=0;i<5;i++){const el=document.getElementById('mc'+i);el.classList.toggle('lit',i<lit);el.classList.toggle('locked',i>=lit)}
-  document.getElementById('progNum').textContent=lit;
-  document.getElementById('mapLabel').textContent=lit>=5?'地图全开 ✓':'地图还没全开';
-  // 任务卡
-  document.getElementById('arcCnt').textContent=Math.min(2,S.archives);
-  document.getElementById('tk1').classList.toggle('done',S.archives>=2);
-  document.getElementById('tk2').classList.toggle('done',true);
-  document.getElementById('tk3').classList.toggle('done',S.orders>=1);
-  const done=[S.archives>=2,true,S.orders>=1].filter(Boolean).length;
-  document.getElementById('taskChip').textContent=done+'/3';
-  document.getElementById('taskDoneNotice').style.display = done>=3?'block':'none';
-  // 首页任务卡文案
-  const tl=document.getElementById('taskList');
-  tl.innerHTML = (S.archives<2?`① 建 2 个商品档案（${Math.min(2,S.archives)}/2）<br>`:'① 建 2 个商品档案 ✓<br>')
-    + (S.orders<1?'② 开 1 张单（0/1）<br>':'② 开 1 张单 ✓<br>')
-    + (S.orders<10?'③ 开出 10 单解锁库存（'+S.orders+'/10）':'③ 库存管理已解锁 ✓');
-  document.getElementById('demoState').innerHTML=`状态：<b>${S.full?'全图毕业':'新手村'}</b> ｜ 已建档：${S.archives}/2 ｜ 已开单：${S.orders}/10`;
+/* ============ 微信端渲染 ============ */
+function msgLeft(html){return '<div class="msg left"><div class="bubble">'+html+'</div></div>';}
+function msgRight(html){return '<div class="msg right"><div class="bubble">'+html+'</div></div>';}
+
+function cardShell(day,title,badge,bodyHtml,actionsHtml){
+  return '<div class="workcard">'+
+    '<div class="card-head"><div><div class="d">'+phases[phaseOf(day)-1]+'阶段 · 第 '+day+' / 30 天</div><div class="t">'+title+'</div></div><span class="card-badge">'+badge+'</span></div>'+
+    '<div class="card-body">'+bodyHtml+'</div>'+
+    (actionsHtml?'<div class="actions">'+actionsHtml+'</div>':'')+
+  '</div>';
+}
+function phaseOf(day){
+  if(day<=6)return 1; if(day<=12)return 2; if(day<=18)return 3; if(day<=24)return 4; return 5;
+}
+function sec(lbl,valHtml){return '<div class="card-sec"><div class="lbl">'+lbl+'</div><div class="val">'+valHtml+'</div></div>';}
+function quoteBox(text,btn){return '<div class="quote">'+text+(btn?'<button class="copy-btn" onclick="copyText(\''+btn+'\')">复制</button>':'')+'</div>';}
+
+/* 第13天：补货日 */
+function card13(){
+  var body =
+    sec('今日AI替你干了什么','盯完了<span class="good">断货风险</span>和<span class="good">补货需求</span>')+
+    sec('结果','金饰手链 <b>38 款</b>库存只够 <b>5 天</b>，按销量+在途算好补货量：<br><b>建议进 60 条</b>（上周卖 42 条）')+
+    sec('对上游 · 催货话术', quoteBox('李总，上周订的100条手链明天能发吗？客户那边等着要，麻烦优先安排下，谢谢！','李总催货话术'))+
+    sec('补货单预览','<span style="font-size:12px">金饰手链 60 条 · 吊坠项链 35 条 · 耳钉套装 20 对<br>合计 ¥86,400（按供应商聚合）</span>');
+  var actions = '<button class="btn gold" onclick="copyText(\'补货单已复制\')">📋 复制补货单发工厂</button><button class="btn" onclick="toast(\'已改天再说，明天会提醒\')">改天再说</button>';
+  return msgLeft(cardShell(13,'补货日',state.day>=30?'旗舰':'专业版',body,actions));
 }
 
-// ===== 模拟动作 =====
-function simArchive(){
-  if(S.full)return;
-  S.archives=Math.min(2,S.archives+1);
-  refreshHome();
-  if(S.archives>=2){
-    fireUnlock('客户管理已解锁','因为你已经建好了商品档案\nAI 开始帮你分析每一个客户');
-    document.getElementById('unlockBtn').onclick=()=>{closeUnlock();go('s-home')};
+/* 第7天：催收日 */
+function card7(){
+  var body =
+    sec('今日AI替你干了什么','盯完了<span class="money">欠款</span>，排好了今天该催谁')+
+    sec('结果','<b>王老板</b>欠 <span class="money">3.8 万</span> · 逾期 <b>12 天</b>（最大一笔）<br>李老板欠 1.2 万 · 逾期 5 天')+
+    sec('软催话术（关系好）', quoteBox('王老板，最近生意咋样？上批货那3.8万，您看这两天方便安排不？不急，您先忙～','软催话术'))+
+    sec('硬催话术（风险高）', quoteBox('李老板，您那笔1.2万已逾期30天，本周五前请安排一下，逾期太久按约定要暂停供货了。','硬催话术'))+
+    sec('节日催 · 备用','过年了，账清一清，大家来年好合作！');
+  var actions = '<button class="btn primary" onclick="copyText(\'软催话术已复制\')">💬 复制软催话术</button><button class="btn gold" onclick="copyText(\'硬催话术已复制\')">💬 硬催</button><button class="btn" onclick="toast(\'已忽略，明天换内容\')">忽略</button>';
+  return msgLeft(cardShell(7,'催收日',state.day>=30?'旗舰':'专业版',body,actions));
+}
+
+/* 第29天：月报 */
+function card29(){
+  var body =
+    sec('今日AI替你干了什么','写好了 <b>月度经营报告</b>（一页纸）')+
+    sec('本月成绩','销售 <b>¥126.8万</b> · 环比 <span class="good">+8.2%</span> · 毛利 ¥31.4万（24.8%）')+
+    sec('三个发现','1. 饰品品类贡献 41% 毛利，环比 +12%<br>2. 王老板欠款 3.8 万已逾期 12 天，建议本月重点催<br>3. 库龄超 90 天的压货 ¥22万，建议清仓')+
+    sec('下月建议','金饰手链按 90 条备货；对 5 个 30 天未采购客户做挽回')+
+    sec('报告正文（AI 润色）', quoteBox('本月经营平稳向好：销售 126.8 万，环比增长 8.2%，主要来自饰品品类的带动。需要关注的是应收与压货——王老板 3.8 万逾期 12 天，以及 22 万超 90 天库存。建议下月把回款和清仓作为两件大事来抓。','月报正文'));
+  var actions = '<button class="btn gold" onclick="copyText(\'月报已复制，可发朋友圈\')">📤 复制转朋友圈</button><button class="btn primary" onclick="toast(\'已解锁问答进阶：随便问！\')">解锁问答进阶 →</button>';
+  return msgLeft(cardShell(29,'月度收官',state.day>=30?'旗舰':'专业版',body,actions));
+}
+
+/* 问数场景 */
+function askView(){
+  var askHistory =
+    msgRight('王老板总共欠我多少？')+
+    msgLeft('<b>王老板</b>共欠 <span class="money">¥3.8万</span>，其中 <b>¥2.6万</b> 逾期超过 10 天。<br><span style="font-size:11px;color:var(--muted)">数据截至 07:30 · 来自您自己的系统</span>')+
+    msgRight('帮我查一下隔壁老周店的进货价')+
+    msgLeft('<div style="color:var(--navy);font-weight:600">我只能看您自己店的数据</div><div style="font-size:12px;margin-top:4px">别的店的数据我这边看不到，也永远不会看到。</div>');
+  var chips = '<div style="padding:10px 14px 2px"><span class="ask-chip" onclick="toast(\'好的问题！能帮你提前3天发现回款风险\')">💡 试试这样问：哪个客户回款最慢？</span><span class="ask-chip" onclick="toast(\'这个问题问得好，能帮你盯住断货\')">💡 下个月该进什么货？</span></div>';
+  var input = '<div class="chat-input"><input id="askInput" placeholder="问您的生意…" onkeydown="if(event.key===\'Enter\')askGo()"><button class="send-btn" onclick="askGo()">发送</button></div>';
+  return askHistory+chips+input;
+}
+function askGo(){
+  var v=document.getElementById('askInput').value.trim();
+  if(!v)return;
+  var node=document.getElementById('app-root');
+  var extra='';
+  if(v.indexOf('老王')>-1||v.indexOf('欠')>-1){extra=msgLeft('王老板共欠 <span class="money">¥3.8万</span>，逾期 12 天，是最大一笔。<br>要不要我生成一条催收话术？');}
+  else if(v.indexOf('隔壁')>-1||v.indexOf('别家')>-1||v.indexOf('老周')>-1){extra=msgLeft('<div style="color:var(--navy);font-weight:600">我只能看您自己店的数据</div>');}
+  else if(v.indexOf('进')>-1||v.indexOf('货')>-1){extra=msgLeft('金饰手链库存只够 5 天，建议进 <b>60 条</b>（按销量+在途算好）。<br>明天早上会有完整的补货建议卡。');}
+  else{extra=msgLeft('这个问题我得再想想——您店里的数据里暂时没找到对应答案，您可以换个问法试试。');}
+  node.insertAdjacentHTML('beforeend',msgRight(v)+extra);
+  node.scrollTop=node.scrollHeight;
+  document.getElementById('askInput').value='';
+}
+
+/* ============ App 端渲染 ============ */
+function appView(){
+  var nav='<div class="app-nav"><div class="tab active">首页</div><div class="tab">开单</div><div class="tab">AI助手</div><div class="tab">我的</div></div>';
+  var body='';
+  if(state.scenario==='draft'){
+    body = '<div class="sec-title" style="padding-top:12px">草稿单 · 待确认（1）</div>'+
+    '<div class="draft-card">'+
+      '<div class="draft-head"><div class="c">老张珠宝批发</div><span class="tag">AI 生成 · 带历史价</span></div>'+
+      '<div class="draft-row"><span class="k">金饰手链 ×20</span><span class="v">¥180 <span style="color:var(--green);font-size:10px">客户价</span></span></div>'+
+      '<div class="draft-row"><span class="k">吊坠项链 ×10</span><span class="v">¥260 <span style="color:var(--green);font-size:10px">客户价</span></span></div>'+
+      '<div class="draft-row"><span class="k">耳钉套装 ×5</span><span class="v">¥95 <span style="color:var(--green);font-size:10px">客户价</span></span></div>'+
+      '<div class="draft-row"><span class="k">合计</span><span class="v" style="color:var(--navy)">¥6,275</span></div>'+
+      '<div style="padding:8px 14px;font-size:11px;color:var(--muted)">来源：微信订单消息 · 与历史价一致 ✓ 确认后正式开单</div>'+
+    '</div>'+
+    '<div class="actions" style="margin:0 12px;border:1px solid var(--line);border-radius:14px">'+
+      '<button class="btn primary" onclick="toast(\'已确认，正式开单完成 ✅\')">✅ 确认开单</button>'+
+      '<button class="btn" onclick="toast(\'已驳回，可修改草稿\')">修改</button>'+
+    '</div>'+
+    '<div class="phase-note" style="margin-top:12px">💡 微信里收到的客户订单，AI 已生成带历史价的草稿单——您只需要点确认。</div>';
+  } else if(state.scenario==='calendar'){
+    body = appCalendar();
+  } else {
+    body = '<div class="sec-title" style="padding-top:12px">今日工作卡 · 同步自微信端</div>'+
+    (state.scenario==='card13'?card13Html():state.scenario==='card7'?card7Html():card29Html());
   }
+  var tabbar='<div class="tabbar"><div class="t active"><span class="ic">🏠</span>首页</div><div class="t"><span class="ic">🧾</span>开单</div><div class="t"><span class="ic">🤖</span>AI助手</div><div class="t"><span class="ic">👤</span>我的</div></div>';
+  return nav+'<div style="flex:1;overflow-y:auto">'+body+'</div>'+tabbar;
 }
-function simOrder(){
-  if(S.full)return;
-  S.orders=Math.min(10,S.orders+5);
-  refreshHome();
-  if(S.orders>=10 && !S.full){
-    S.full=true; S.archives=2;
-    fireUnlock('地图全开 · AI 装备解锁','因为你已经开出 10 张单\n库存管理 · 语音开单 · 微信转单 全部解锁\n你现在看到的是老板大图');
-    document.getElementById('unlockBtn').onclick=()=>{closeUnlock();go('s-full')};
+function card13Html(){return '<div class="workcard" style="margin:12px"><div class="card-head"><div><div class="d">建议阶段 · 第 13 / 30 天</div><div class="t">补货日</div></div><span class="card-badge">专业版</span></div><div class="card-body">'+sec('结果','金饰手链 38 款库存只够 <b>5 天</b>，建议进 <b>60 条</b>')+sec('补货单','金饰手链 60 条 · 吊坠项链 35 条 · 耳钉套装 20 对<br>合计 ¥86,400')+'</div><div class="actions"><button class="btn gold" onclick="toast(\'补货单已复制\')">复制补货单</button><button class="btn" onclick="toast(\'已改天再说\')">改天再说</button></div></div>';}
+function card7Html(){return '<div class="workcard" style="margin:12px"><div class="card-head"><div><div class="d">盯钱账阶段 · 第 7 / 30 天</div><div class="t">催收日</div></div><span class="card-badge">专业版</span></div><div class="card-body">'+sec('结果','<b>王老板</b>欠 <span class="money">3.8 万</span> · 逾期 12 天<br>李老板欠 1.2 万 · 逾期 5 天')+'</div><div class="actions"><button class="btn primary" onclick="toast(\'软催话术已复制\')">复制软催话术</button><button class="btn" onclick="toast(\'已忽略\')">忽略</button></div></div>';}
+function card29Html(){return '<div class="workcard" style="margin:12px"><div class="card-head"><div><div class="d">月度收官 · 第 29 / 30 天</div><div class="t">月度经营报告</div></div><span class="card-badge">旗舰版</span></div><div class="card-body">'+sec('本月成绩','销售 <b>¥126.8万</b> · 环比 <span class="good">+8.2%</span> · 毛利 ¥31.4万')+sec('建议','下月金饰手链按 90 条备货；重点催王老板 3.8 万')+'</div><div class="actions"><button class="btn gold" onclick="toast(\'月报已复制\')">复制月报</button></div></div>';}
+
+/* 30天排班日历 */
+function appCalendar(){
+  var cells='';
+  for(var d=1;d<=30;d++){
+    var cls='cal-day';
+    if(d<state.day)cls+=' done';
+    if(d===state.day)cls+=' today';
+    if(d>state.day+2)cls+=' locked';
+    cells+='<div class="cal-day '+cls+'" onclick="if('+d+'<='+state.day+'){state.day='+d+';state.scenario=\'card\'+('+d+');render();}"><span class="num">'+d+'</span><span style="font-size:8px;overflow:hidden;max-width:100%">'+(schedule[d]?schedule[d][0].slice(0,5):'')+'</span></div>';
   }
-}
-function simAll(){
-  S.archives=2; S.orders=10; S.full=true;
-  refreshHome(); fireUnlock('地图全开 · AI 装备解锁','恭喜毕业！全部功能 + AI 装备已解锁\n新客户走完这个过程大约需要 1 个月');
-  document.getElementById('unlockBtn').onclick=()=>{closeUnlock();go('s-full')};
-}
-function resetDemo(){
-  S.archives=0; S.orders=0; S.full=false;
-  refreshHome(); go('s-home');
-}
-// ===== 建档/开单完成（界面内按钮） =====
-function finishArchive(){
-  simArchive();
-  if(S.archives>=2){go('s-home')}else{go('s-tasks')}
-}
-function finishOrder(){
-  simOrder();
-  if(S.full){go('s-full')}else{go('s-home')}
-}
-// 模态
-function showModal(id){document.getElementById(id).classList.add('show')}
-function closeModal(id){document.getElementById(id).classList.remove('show')}
-document.querySelectorAll('.modal').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('show')}));
-// toast
-let toastTimer=null;
-function toast(msg){
-  const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
-  clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('show'),2200);
+  var phasesHtml='';
+  for(var i=0;i<5;i++){phasesHtml+='<span class="phase '+(phaseOf(state.day)===i+1?'cur':'')+'">'+(i+1)+'·'+phases[i]+'</span>';}
+  return '<div class="sec-title" style="padding-top:12px">30天经营陪跑 · 排班总览</div>'+
+    '<div class="phase-row">'+phasesHtml+'</div>'+
+    '<div class="cal-grid">'+cells+'</div>'+
+    '<div class="phase-note">💡 排班是活的：连续忽略某类内容，AI 会自动换成别的——第 '+state.day+' 天已完成'+(state.day-1)+' 件经营工作。</div>';
 }
 
-// init
-refreshHome();
+/* ============ 主渲染 ============ */
+function render(){
+  var root=document.getElementById('app-root');
+  var html='';
+  if(state.endpoint==='wechat'){
+    html+='<div class="wechat-banner">批灵 · 每日工作卡</div>'+
+    '<div class="wechat-top"><div class="avatar">批</div><div><div class="name">批灵智能体</div><div class="sub">已连接您的快批数据</div></div></div>'+
+    '<div class="chat-body" id="chatBody">';
+    if(state.scenario==='card13')html+=card13();
+    else if(state.scenario==='card7')html+=card7();
+    else if(state.scenario==='card29')html+=card29();
+    else if(state.scenario==='ask')html+=askView();
+    else if(state.scenario==='draft'){html+=msgLeft('收到 <b>老张珠宝批发</b> 发来的订单消息：')+msgLeft('<div style="background:#F6F8FC;border-radius:10px;padding:8px 10px;font-size:12px">金饰手链20条 吊坠项链10对 耳钉套装5对</div>')+msgLeft('已生成草稿单（带历史价），请到 <b>快批App</b> 确认 →')+msgLeft('<div style="font-size:11px;color:var(--green)">✅ 已推送到 App 确认台</div>');}
+    else if(state.scenario==='calendar'){html+='<div class="phase-note">30 天排班总览在 App 端展示，微信端每天只推当天的卡。</div>'+msgLeft('今天第 '+state.day+' 天：'+(schedule[state.day]?schedule[state.day][0]:'')+'。明天会准时推给您。');}
+    html+='</div>';
+    if(state.scenario==='ask'){ /* 问数输入已在 askView */ }
+  } else {
+    html=appView();
+  }
+  root.innerHTML=html;
+  var slider=document.getElementById('daySlider');
+  slider.value=state.day;
+  document.getElementById('dayLabel').textContent='第 '+state.day+' / 30 天';
+}
+
+/* 红线开关：演示"不点同行"与"点同行"的对比 */
+function toggleRedline(){
+  state.redline=!state.redline;
+  var sw=document.getElementById('redlineToggle');
+  sw.classList.toggle('on',state.redline);
+  if(state.scenario==='ask'&&state.endpoint==='wechat'){
+    var chip=document.querySelector('.ask-chip');
+    if(chip){
+      chip.innerHTML = state.redline ? '💡 试试这样问：哪个客户回款最慢？' : '❌ 反面演示：隔壁市场王老板也在问这个';
+      chip.style.background = state.redline ? '' : '#FDECEA';
+      chip.style.color = state.redline ? '' : 'var(--red)';
+      chip.style.borderColor = state.redline ? '' : '#F3C6C0';
+    }
+  }
+  toast(state.redline?'✅ 红线模式：教方法，不点同行':'⚠️ 反面演示：提同行 = 信任崩塌（正式版绝不允许）');
+}
+
+function copyText(t){toast(t);}
+function toast(m){
+  var t=document.getElementById('toast');
+  t.textContent=m;t.classList.add('show');
+  clearTimeout(t._timer);t._timer=setTimeout(function(){t.classList.remove('show');},1800);
+}
+
+/* ============ 事件绑定 ============ */
+document.getElementById('endpoint').addEventListener('change',function(){state.endpoint=this.value;render();});
+document.getElementById('scenario').addEventListener('change',function(){state.scenario=this.value;render();});
+document.getElementById('daySlider').addEventListener('input',function(){state.day=parseInt(this.value,10);render();});
+document.getElementById('redlineToggle').addEventListener('click',toggleRedline);
+document.getElementById('resetBtn').addEventListener('click',function(){state={endpoint:'wechat',scenario:'card13',day:13,redline:true};document.getElementById('redlineToggle').classList.add('on');render();toast('已重置');});
+
+window.__errs=[];
+window.addEventListener('error',function(e){window.__errs.push(String(e.message));});
+
+render();
 </script>
 </body>
 </html>
